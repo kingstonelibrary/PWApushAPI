@@ -1,0 +1,33 @@
+
+・事前予定されたというのが今回のキモ
+・それはユーザーがオフラインでも計画されたときにプッシュ通知を表示できる
+　（その点が以前から進歩したところ）
+・キーワード
+  →　SWの登録
+  →　事前予定されたプッシュ通知の追加・削除
+  →　ボタンによる通知の拡張
+  →　プッシュ通知のSWでの扱い
+
+・Push API の問題は特定の状況下で確実に通知を知らせられるかが不確実であること
+ （特定の時間に確実にとか、特定の場所に来たら表示するとか通信状況やバッテリーセーブモードとかで不確実）
+・Chrome 80では Notification Trigger APIを策定し始めた
+・ Notification Trigger APIはサーバーからのプッシュイベントだけでなく
+　 場所や時間でのプッシュ通知を検討している
+・現在は時間スケジュールによるものが実験的に行える
+ （　chrome;//flags で #enable-experimental-web-platform-featuresをオンにする）
+
+・時間によるプッシュ通知の送信コード（UI側）
+  const reg = await navigator.serviceWorker.getRegistration();  // 登録SWを取得
+  reg.showNotification(                                         // トリガーを時間に指定してプッシュ通知の表示コマンド実行
+    'Demo Push Notification',
+    {
+      tag: timestamp, // a unique ID
+      body: 'Hello World', // content of the push notification
+      showTrigger: new TimestampTrigger(timestamp),             // トリガーの指定
+      data: {
+        url: window.location.href, // pass the current url to the notification
+      },
+      badge: './assets/badge.png',
+      icon: './assets/icon.png',
+    }
+  );
